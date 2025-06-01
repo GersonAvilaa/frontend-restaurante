@@ -1,0 +1,251 @@
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f8f8f8;
+  color: #333;
+  overflow-x: hidden;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #ff6347;
+  padding: 10px 20px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.logo {
+  font-size: 26px;
+  color: white;
+  font-weight: bold;
+}
+
+.header-icons {
+  display: flex;
+  align-items: center;
+}
+
+.login {
+  position: relative;
+  margin-right: 20px;
+}
+
+.login-form {
+  display: none;
+  position: absolute;
+  top: 35px;
+  right: 0;
+  background-color: white;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  padding: 15px;
+  width: 250px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+  z-index: 99;
+}
+
+.login-form input {
+  width: 100%;
+  margin: 8px 0;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.login-form button {
+  width: 100%;
+  padding: 10px;
+  background-color: #ff6347;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.login-form button:hover {
+  background-color: #ff4500;
+}
+
+.login-form h3 {
+  margin-top: 0;
+  text-align: center;
+  font-size: 18px;
+  color: #444;
+}
+
+.login-form label {
+  font-size: 14px;
+  color: #555;
+  margin-top: 10px;
+  display: block;
+}
+
+
+.register-link {
+  text-align: center;
+  margin-top: 10px;
+  font-size: 12px;
+}
+
+.register-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.register-container form {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  width: 320px;
+}
+
+.register-container input {
+  margin: 10px 0;
+  padding: 10px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.register-container button {
+  padding: 10px;
+  width: 100%;
+  background-color: #ff6347;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+
+.menu {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 20px;
+  gap: 20px;
+}
+
+.menu-comida {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  width: 300px;
+  padding: 15px;
+  text-align: center;
+}
+
+.menu-comida img {
+  width: 100%;
+  border-radius: 8px 8px 0 0;
+}
+
+.button-group {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.button-group button {
+  padding: 10px;
+  background-color: #ff6347;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.button-group button:hover {
+  background-color: #ff4500;
+}
+
+.cart {
+  font-size: 24px;
+  color: white;
+  cursor: pointer;
+}
+
+.logout button {
+  background-color: #444;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+.resumen-compra {
+  background-color: #fefefe;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 15px;
+  margin: 15px auto;
+  max-width: 600px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.productos-compra {
+  padding-left: 10px;
+  border-left: 3px solid #ff6347;
+  margin-top: 10px;
+}
+
+.producto-item {
+  margin-bottom: 10px;
+}
+
+#historialButton button {
+  background-color: #888;
+  color: white;
+  padding: 8px 16px;
+  margin-left: 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+#historialButton button:hover {
+  background-color: #555;
+}
+
+.bienvenida {
+  background-color: #fff3e6;
+  color: #333;
+  text-align: center;
+  padding: 10px;
+  font-size: 16px;
+  font-weight: bold;
+  border-bottom: 1px solid #ff6347;
+}
+
+.resumen-carrito {
+  margin: 20px auto;
+  max-width: 400px;
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.resumen-carrito p {
+  margin: 8px 0;
+  font-size: 16px;
+}
+
+.resumen-carrito button {
+  margin-top: 10px;
+  padding: 10px 20px;
+  background-color: #ff6347;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Historial de Compras</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    main {
+      padding: 20px;
+      max-width: 900px;
+      margin: auto;
+    }
+    h1 {
+      text-align: center;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: center;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+    #mensaje {
+      text-align: center;
+      margin-top: 30px;
+      font-size: 18px;
+      color: #777;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">Fast Food Restaurant</div>
+  </header>
+
+  <main>
+    <h1>Historial de Compras</h1>
+    <div id="mensaje"></div>
+    <table id="tablaHistorial" style="display:none;">
+      <thead>
+        <tr>
+          <th>Fecha</th>
+          <th>Producto</th>
+          <th>Cantidad</th>
+          <th>Precio Unitario</th>
+          <th>Subtotal</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <button onclick="location.href='index.html'" style="margin-top: 20px;">Volver al menú</button>
+  </main>
+
+  <script src="js/historial.js"></script>
+</body>
+</html>
