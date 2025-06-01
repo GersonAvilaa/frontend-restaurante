@@ -37,6 +37,8 @@ async function cargarProductos() {
     const response = await fetch(`${API_BASE}/api/products`);
     const productos = await response.json();
 
+    if (!Array.isArray(productos)) throw new Error("Respuesta inesperada");
+
     const container = document.getElementById("menu-container");
     container.innerHTML = "";
 
@@ -65,10 +67,7 @@ async function cargarProductos() {
 
 async function addToCart(id_producto, precio, cantidad) {
   const token = localStorage.getItem("token");
-  if (!token) {
-    alert("Debes iniciar sesión para agregar al carrito.");
-    return;
-  }
+  if (!token) return alert("Debes iniciar sesión para agregar al carrito.");
 
   const usuarioId = parseJwt(token).id;
 
@@ -87,13 +86,13 @@ async function addToCart(id_producto, precio, cantidad) {
       })
     });
 
+    const data = await res.json();
     if (res.ok) {
       alert("Producto agregado al carrito.");
       const cartCount = document.querySelector('.cart-count');
       cartCount.textContent = parseInt(cartCount.textContent) + parseInt(cantidad);
     } else {
-      const err = await res.json();
-      alert(err.mensaje || "Error al agregar producto.");
+      alert(data.mensaje || "Error al agregar producto.");
     }
   } catch (error) {
     console.error("Error:", error);
@@ -101,13 +100,9 @@ async function addToCart(id_producto, precio, cantidad) {
   }
 }
 
-// 🛒 Comprar Ahora sin pasar por el carrito
 async function comprarAhora(id_producto, precio, cantidad) {
   const token = localStorage.getItem("token");
-  if (!token) {
-    alert("Debes iniciar sesión para realizar una compra.");
-    return;
-  }
+  if (!token) return alert("Debes iniciar sesión para realizar una compra.");
 
   const confirmado = confirm("¿Deseas comprar ahora este producto?");
   if (!confirmado) return;
@@ -115,7 +110,6 @@ async function comprarAhora(id_producto, precio, cantidad) {
   const usuarioId = parseJwt(token).id;
 
   try {
-    // Agregar al carrito primero
     await fetch(`${API_BASE}/api/cart`, {
       method: "POST",
       headers: {
@@ -130,14 +124,14 @@ async function comprarAhora(id_producto, precio, cantidad) {
       })
     });
 
-    // Realizar compra
     const res = await fetch(`${API_BASE}/api/compras`, {
       method: "POST",
-      headers: { Authorization: `Bearer ${token}` }
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
     });
 
     const data = await res.json();
-
     if (res.ok) {
       alert("Compra realizada exitosamente.");
       window.location.href = "confirmacion.html";
@@ -166,15 +160,12 @@ function verificarSesion() {
     logoutBtn.style.display = "block";
     if (historialBtn) historialBtn.style.display = "block";
 
-    try {
-      const payload = parseJwt(token);
-      const nombre = payload.nombre_completo || "Usuario";
-      if (mensajeBienvenida) {
-        mensajeBienvenida.style.display = "block";
-        mensajeBienvenida.textContent = `Bienvenido, ${nombre}`;
-      }
-    } catch (err) {
-      console.error("Token inválido al decodificar:", err);
+    const payload = parseJwt(token);
+    const nombre = payload.nombre_completo || "Usuario";
+
+    if (mensajeBienvenida) {
+      mensajeBienvenida.style.display = "block";
+      mensajeBienvenida.textContent = `Bienvenido, ${nombre}`;
     }
   } else {
     logoutBtn.style.display = "none";
@@ -182,7 +173,6 @@ function verificarSesion() {
     if (mensajeBienvenida) mensajeBienvenida.style.display = "none";
   }
 }
-
 
 function parseJwt(token) {
   const base64Url = token.split(".")[1];
