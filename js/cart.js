@@ -1,14 +1,19 @@
 const API_BASE = "https://taller-ph1e.onrender.com";
 
+document.addEventListener("DOMContentLoaded", cargarCarrito);
+
 async function cargarCarrito() {
   const token = localStorage.getItem("token");
-  if (!token) return location.href = "index.html";
+  if (!token) {
+    alert("Debes iniciar sesión");
+    location.href = "index.html";
+    return;
+  }
 
   const tbody = document.querySelector("#cart-table tbody");
   const mensaje = document.getElementById("mensaje-carrito");
-  const tabla = document.getElementById("cart-table");
-  const botonConfirmar = document.getElementById("confirm-btn");
-  let total = 0;
+  const totalDiv = document.getElementById("total");
+  const confirmBtn = document.getElementById("confirm-btn");
 
   try {
     const res = await fetch(`${API_BASE}/api/cart`, {
@@ -16,111 +21,115 @@ async function cargarCarrito() {
     });
 
     const data = await res.json();
-    const productos = data.productos;
+    const productos = data.productos || [];
 
-    if (!productos || productos.length === 0) {
+    tbody.innerHTML = "";
+    mensaje.textContent = "";
+
+    if (productos.length === 0) {
       mensaje.textContent = "Tu carrito está vacío.";
-      tabla.style.display = "none";
-      botonConfirmar.style.display = "none";
-      document.getElementById("total").textContent = "Total: $0";
+      confirmBtn.style.display = "none";
+      document.getElementById("cart-table").style.display = "none";
+      totalDiv.textContent = "Total: $0";
       return;
     }
 
-    tabla.style.display = "table";
-    botonConfirmar.style.display = "block";
-    mensaje.textContent = "";
-    tbody.innerHTML = "";
-
-    productos.forEach(prod => {
-      const subtotal = prod.precio * prod.cantidad;
-      total += subtotal;
-
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td>${prod.nombre}</td>
-        <td>$${prod.precio}</td>
-        <td><input type="number" min="1" value="${prod.cantidad}" data-id="${prod.id}" class="cantidad-input" /></td>
-        <td>$${subtotal}</td>
-        <td><button class="eliminar-btn" data-id="${prod.id}">Eliminar</button></td>
+    let subtotal = 0;
+    productos.forEach(p => {
+      subtotal += p.total;
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${p.nombre}</td>
+        <td>$${p.precio}</td>
+        <td><input type="number" value="${p.cantidad}" min="1" data-id="${p.id}" class="cantidad-input"></td>
+        <td>$${p.total}</td>
+        <td><button class="eliminar-btn" data-id="${p.id}">❌</button></td>
       `;
-      tbody.appendChild(tr);
+      tbody.appendChild(row);
     });
 
-    document.getElementById("total").textContent = `Total: $${total.toLocaleString()}`;
+    const descuento = data.descuento_aplicado || 0;
+    const totalFinal = subtotal - descuento;
 
-    // Eventos
-    document.querySelectorAll(".cantidad-input").forEach(input => {
-      input.addEventListener("change", async (e) => {
-        const nuevaCantidad = parseInt(e.target.value);
-        const id_producto = e.target.dataset.id;
-        if (nuevaCantidad >= 1) {
-          await actualizarCantidad(id_producto, nuevaCantidad);
-          await cargarCarrito();
-        }
-      });
-    });
+    totalDiv.innerHTML = `
+      Subtotal: $${subtotal}<br>
+      ${descuento > 0 ? `Descuento: -$${descuento}<br><strong>Total: $${totalFinal}</strong>` : `<strong>Total: $${subtotal}</strong>`}
+    `;
 
-    document.querySelectorAll(".eliminar-btn").forEach(btn => {
-      btn.addEventListener("click", async (e) => {
-        const id_producto = e.target.dataset.id;
-        await eliminarProducto(id_producto);
-        await cargarCarrito();
-      });
-    });
+    confirmBtn.style.display = "inline-block";
+    document.getElementById("cart-table").style.display = "table";
+    agregarEventos();
 
-  } catch (err) {
-    console.error("Error al cargar el carrito:", err);
+  } catch (e) {
+    console.error("Error al cargar carrito:", e);
     mensaje.textContent = "Error al cargar el carrito.";
   }
 }
 
-async function actualizarCantidad(id_producto, cantidad) {
-  const token = localStorage.getItem("token");
-  const usuarioId = parseJwt(token).id;
+function agregarEventos() {
+  document.querySelectorAll(".cantidad-input").forEach(input => {
+    input.addEventListener("change", async (e) => {
+      const cantidad = parseInt(e.target.value);
+      const id_producto = e.target.dataset.id;
+      if (cantidad < 1) return alert("Cantidad inválida");
 
-  await fetch(`${API_BASE}/api/cart`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`
-    },
-    body: JSON.stringify({ id_usuario: usuarioId, id_producto, cantidad })
+      const token = localStorage.getItem("token");
+      const usuarioId = parseJwt(token).id;
+
+      await fetch(`${API_BASE}/api/cart`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ id_usuario: usuarioId, id_producto, cantidad })
+      });
+
+      cargarCarrito();
+    });
   });
-}
 
-async function eliminarProducto(id_producto) {
-  const token = localStorage.getItem("token");
-  const usuarioId = parseJwt(token).id;
+  document.querySelectorAll(".eliminar-btn").forEach(btn => {
+    btn.addEventListener("click", async (e) => {
+      const id_producto = e.target.dataset.id;
+      const confirmar = confirm("¿Eliminar este producto?");
+      if (!confirmar) return;
 
-  await fetch(`${API_BASE}/api/cart`, {
-    method: "DELETE",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`
-    },
-    body: JSON.stringify({ id_usuario: usuarioId, id_producto })
+      const token = localStorage.getItem("token");
+      const usuarioId = parseJwt(token).id;
+
+      await fetch(`${API_BASE}/api/cart`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ id_usuario: usuarioId, id_producto })
+      });
+
+      cargarCarrito();
+    });
   });
-}
 
-document.getElementById("confirm-btn").addEventListener("click", async () => {
-  const token = localStorage.getItem("token");
-  try {
+  document.getElementById("confirm-btn").addEventListener("click", async () => {
+    const token = localStorage.getItem("token");
+
     const res = await fetch(`${API_BASE}/api/compras`, {
       method: "POST",
       headers: { Authorization: `Bearer ${token}` }
     });
+
     const data = await res.json();
+
     if (res.ok) {
       localStorage.setItem("ultimaCompra", JSON.stringify(data));
-      alert("Compra realizada con éxito.");
+      alert("Compra realizada con éxito");
       window.location.href = "confirmacion.html";
     } else {
-      alert(data.mensaje || "Error al confirmar la compra.");
+      alert(data.mensaje || "Error al realizar la compra.");
     }
-  } catch (error) {
-    console.error("Error al confirmar compra:", error);
-  }
-});
+  });
+}
 
 function parseJwt(token) {
   const base64Url = token.split(".")[1];
@@ -129,5 +138,3 @@ function parseJwt(token) {
   ).join(""));
   return JSON.parse(base64);
 }
-
-window.addEventListener("DOMContentLoaded", cargarCarrito);

@@ -35,7 +35,7 @@ window.addEventListener("DOMContentLoaded", async () => {
         <button onclick="location.href='index.html'">Volver al menú</button>
       `;
     } else {
-      contenedor.innerHTML = "<p>Error al mostrar el historial.</p>";
+      contenedor.innerHTML = "<p>Error al mostrar el resumen de la compra.</p>";
     }
   }
 });
@@ -44,6 +44,8 @@ function mostrarResumen(ultimaCompra, detalles, contenedor) {
   contenedor.innerHTML = `
     <p><strong>Fecha:</strong> ${ultimaCompra.fecha}</p>
     <p><strong>ID Compra:</strong> ${ultimaCompra.id_compra}</p>
+    <p><strong>Subtotal:</strong> $${ultimaCompra.subtotal}</p>
+    <p><strong>Descuento:</strong> -$${ultimaCompra.descuento_aplicado}</p>
     <p><strong>Total Pagado:</strong> $${ultimaCompra.total}</p>
     <h3>Productos:</h3>
     <ul>
