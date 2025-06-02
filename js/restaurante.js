@@ -78,19 +78,13 @@ async function addToCart(id_producto, precio, cantidad) {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`
       },
-      body: JSON.stringify({
-        id_usuario: usuarioId,
-        id_producto,
-        cantidad,
-        precio
-      })
+      body: JSON.stringify({ id_usuario: usuarioId, id_producto, cantidad, precio })
     });
 
     const data = await res.json();
     if (res.ok) {
       alert("Producto agregado al carrito.");
-      const cartCount = document.querySelector('.cart-count');
-      cartCount.textContent = parseInt(cartCount.textContent) + parseInt(cantidad);
+      await actualizarContadorReal();
     } else {
       alert(data.mensaje || "Error al agregar producto.");
     }
@@ -116,28 +110,24 @@ async function comprarAhora(id_producto, precio, cantidad) {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`
       },
-      body: JSON.stringify({
-        id_usuario: usuarioId,
-        id_producto,
-        cantidad,
-        precio
-      })
+      body: JSON.stringify({ id_usuario: usuarioId, id_producto, cantidad, precio })
     });
 
     const res = await fetch(`${API_BASE}/api/compras`, {
       method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
+      headers: { Authorization: `Bearer ${token}` }
     });
 
     const data = await res.json();
+
     if (res.ok) {
+      localStorage.setItem("ultimaCompra", JSON.stringify(data));
+      const cartCount = document.querySelector(".cart-count");
+      if (cartCount) cartCount.textContent = "0";
       alert("Compra realizada exitosamente.");
-      window.location.href = "confirmacion.html";
-      document.querySelector(".cart-count").textContent = "0";
+      setTimeout(() => window.location.href = "confirmacion.html", 1000);
     } else {
-      alert(data.mensaje || "Error al comprar.");
+      alert(data.mensaje || "Error al realizar la compra.");
     }
   } catch (error) {
     console.error("Error:", error);
@@ -162,16 +152,34 @@ function verificarSesion() {
     if (historialBtn) historialBtn.style.display = "block";
 
     const payload = parseJwt(token);
-    const nombre = payload.nombre_completo || "Usuario";
+    const nombre = payload?.nombre_completo || "Usuario";
 
     if (mensajeBienvenida) {
       mensajeBienvenida.style.display = "block";
       mensajeBienvenida.textContent = `Bienvenido, ${nombre}`;
     }
+
+    actualizarContadorReal();
   } else {
     logoutBtn.style.display = "none";
     if (historialBtn) historialBtn.style.display = "none";
     if (mensajeBienvenida) mensajeBienvenida.style.display = "none";
+  }
+}
+
+async function actualizarContadorReal() {
+  const token = localStorage.getItem("token");
+  if (!token) return;
+
+  try {
+    const res = await fetch(`${API_BASE}/api/cart`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    const data = await res.json();
+    const count = data.productos?.reduce((acc, p) => acc + p.cantidad, 0) || 0;
+    document.querySelector(".cart-count").textContent = count;
+  } catch (e) {
+    console.error("No se pudo actualizar contador:", e);
   }
 }
 
