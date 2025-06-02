@@ -37,7 +37,9 @@ async function cargarProductos() {
     const response = await fetch(`${API_BASE}/api/products`);
     const productos = await response.json();
 
-    if (!Array.isArray(productos)) throw new Error("Respuesta inesperada");
+    if (!productos || !Array.isArray(productos)) {
+      throw new Error("Respuesta inesperada");
+    }
 
     const container = document.getElementById("menu-container");
     container.innerHTML = "";
@@ -78,7 +80,12 @@ async function addToCart(id_producto, precio, cantidad) {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`
       },
-      body: JSON.stringify({ id_usuario: usuarioId, id_producto, cantidad, precio })
+      body: JSON.stringify({
+        id_usuario: usuarioId,
+        id_producto,
+        cantidad,
+        precio
+      })
     });
 
     const data = await res.json();
@@ -104,15 +111,22 @@ async function comprarAhora(id_producto, precio, cantidad) {
   const usuarioId = parseJwt(token).id;
 
   try {
+    // Agregar producto al carrito
     await fetch(`${API_BASE}/api/cart`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`
       },
-      body: JSON.stringify({ id_usuario: usuarioId, id_producto, cantidad, precio })
+      body: JSON.stringify({
+        id_usuario: usuarioId,
+        id_producto,
+        cantidad,
+        precio
+      })
     });
 
+    // Confirmar compra
     const res = await fetch(`${API_BASE}/api/compras`, {
       method: "POST",
       headers: { Authorization: `Bearer ${token}` }
@@ -124,11 +138,16 @@ async function comprarAhora(id_producto, precio, cantidad) {
       localStorage.setItem("ultimaCompra", JSON.stringify(data));
       const cartCount = document.querySelector(".cart-count");
       if (cartCount) cartCount.textContent = "0";
+
       alert("Compra realizada exitosamente.");
-      setTimeout(() => window.location.href = "confirmacion.html", 1000);
+
+      setTimeout(() => {
+        window.location.href = "confirmacion.html";
+      }, 1000);
     } else {
       alert(data.mensaje || "Error al realizar la compra.");
     }
+
   } catch (error) {
     console.error("Error:", error);
     alert("No se pudo realizar la compra.");
