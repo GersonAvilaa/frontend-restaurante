@@ -8,52 +8,34 @@
   <style>
     main {
       padding: 20px;
-      max-width: 1000px;
+      max-width: 900px;
       margin: auto;
     }
     h1 {
       text-align: center;
-      margin-bottom: 20px;
     }
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-bottom: 30px;
+      margin-top: 20px;
     }
     th, td {
-      border: 1px solid #ccc;
+      border: 1px solid #ddd;
       padding: 8px;
       text-align: center;
     }
     th {
-      background-color: #f5f5f5;
-    }
-    td[colspan="5"] {
-      text-align: right;
-      background-color: #f9f9f9;
-      font-weight: bold;
-    }
-    .cabecera-compra {
-      background-color: #e0f0ff;
-      font-weight: bold;
-      text-align: left;
+      background-color: #f2f2f2;
     }
     #mensaje {
       text-align: center;
+      margin-top: 30px;
       font-size: 18px;
       color: #777;
-      margin: 20px 0;
-    }
-    button {
-      display: block;
-      margin: 20px auto;
-      padding: 10px 20px;
-      font-size: 16px;
     }
   </style>
 </head>
 <body>
-
   <header>
     <div class="logo">Fast Food Restaurant</div>
   </header>
@@ -61,11 +43,10 @@
   <main>
     <h1>Historial de Compras</h1>
     <div id="mensaje"></div>
-
-    <table id="tablaHistorial" style="display: none;">
+    <table id="tablaHistorial" style="display:none;">
       <thead>
         <tr>
-          <th>Fecha / Compra</th>
+          <th>Fecha</th>
           <th>Producto</th>
           <th>Cantidad</th>
           <th>Precio Unitario</th>
@@ -74,8 +55,7 @@
       </thead>
       <tbody></tbody>
     </table>
-
-    <button onclick="location.href='index.html'">Volver al Menú</button>
+    <button onclick="location.href='index.html'" style="margin-top: 20px;">Volver al menú</button>
   </main>
 
   <script src="js/historial.js"></script>

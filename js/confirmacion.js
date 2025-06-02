@@ -8,7 +8,7 @@ window.addEventListener("DOMContentLoaded", async () => {
   const contenedor = document.getElementById("resumen-compra");
 
   try {
-    const res = await fetch(`${API_BASE}/api/compras/historial/${usuarioId}`, {
+    const res = await fetch(`${API_BASE}/api/compras/historial`, {
       headers: { Authorization: `Bearer ${token}` }
     });
 
@@ -35,20 +35,16 @@ window.addEventListener("DOMContentLoaded", async () => {
         <button onclick="location.href='index.html'">Volver al menú</button>
       `;
     } else {
-      contenedor.innerHTML = "<p>Error al mostrar el historial.</p>";
+      contenedor.innerHTML = "<p>Error al mostrar el resumen.</p>";
     }
   }
 });
 
 function mostrarResumen(ultimaCompra, detalles, contenedor) {
-  const descuento = ultimaCompra.descuento_aplicado || 0;
-
   contenedor.innerHTML = `
     <p><strong>Fecha:</strong> ${ultimaCompra.fecha}</p>
     <p><strong>ID Compra:</strong> ${ultimaCompra.id_compra}</p>
-    <p><strong>Subtotal:</strong> $${ultimaCompra.subtotal}</p>
-    ${descuento > 0 ? `<p><strong>Descuento aplicado:</strong> -$${descuento}</p>` : ""}
-    <p><strong>Total Pagado:</strong> $${ultimaCompra.total_pagado}</p>
+    <p><strong>Total Pagado:</strong> $${ultimaCompra.total}</p>
     <h3>Productos:</h3>
     <ul>
       ${detalles.map(item => `

@@ -41,9 +41,9 @@ async function cargarCarrito() {
       row.innerHTML = `
         <td>${p.nombre}</td>
         <td>$${p.precio}</td>
-        <td><input type="number" value="${p.cantidad}" min="1" data-id="${p.id}" class="cantidad-input"></td>
+        <td><input type="number" value="${p.cantidad}" min="1" data-id="${p.id_producto}" class="cantidad-input"></td>
         <td>$${p.total}</td>
-        <td><button class="eliminar-btn" data-id="${p.id}">❌</button></td>
+        <td><button class="eliminar-btn" data-id="${p.id_producto}">❌</button></td>
       `;
       tbody.appendChild(row);
     });
@@ -53,7 +53,7 @@ async function cargarCarrito() {
 
     totalDiv.innerHTML = `
       Subtotal: $${subtotal}<br>
-      ${descuento > 0 ? `Descuento: -$${descuento}<br><strong>Total con descuento: $${totalFinal}</strong>` : `<strong>Total: $${subtotal}</strong>`}
+      ${descuento > 0 ? `Descuento: -$${descuento}<br><strong>Total: $${totalFinal}</strong>` : `Total: $${subtotal}`}
     `;
 
     confirmBtn.style.display = "inline-block";

@@ -1,63 +1,20 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Confirmación de Compra</title>
-  <link rel="stylesheet" href="css/styles.css" />
-  <style>
-    main {
-      max-width: 700px;
-      margin: auto;
-      padding: 20px;
-    }
-
-    h1 {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-
-    #resumen-compra {
-      background-color: #fff;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    #resumen-compra p,
-    #resumen-compra li {
-      font-size: 16px;
-      margin: 8px 0;
-    }
-
-    button {
-      display: block;
-      margin: 30px auto 0;
-      padding: 10px 20px;
-      background-color: #ff6347;
-      color: #fff;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background-color: #ff4500;
-    }
-  </style>
+  <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-
   <header>
     <div class="logo">Fast Food Restaurant</div>
   </header>
 
   <main>
     <h1>Resumen de tu compra</h1>
-    <div id="resumen-compra">
-      <p>Cargando resumen...</p>
-    </div>
-    <button onclick="window.location.href='index.html'">Volver al Menú</button>
+    <div id="resumen-compra"></div>
+    <button onclick="location.href='index.html'">Volver al Menú</button>
   </main>
 
   <script src="js/confirmacion.js"></script>
