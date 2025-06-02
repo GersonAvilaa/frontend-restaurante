@@ -21,12 +21,12 @@ async function cargarCarrito() {
     });
 
     const data = await res.json();
-    const productos = data.productos || [];
+    const productos = data.productos;
 
     tbody.innerHTML = "";
     mensaje.textContent = "";
 
-    if (productos.length === 0) {
+    if (!productos || productos.length === 0) {
       mensaje.textContent = "Tu carrito está vacío.";
       confirmBtn.style.display = "none";
       document.getElementById("cart-table").style.display = "none";
@@ -53,7 +53,7 @@ async function cargarCarrito() {
 
     totalDiv.innerHTML = `
       Subtotal: $${subtotal}<br>
-      ${descuento > 0 ? `Descuento: -$${descuento}<br><strong>Total: $${totalFinal}</strong>` : `<strong>Total: $${subtotal}</strong>`}
+      ${descuento > 0 ? `Descuento: -$${descuento}<br><strong>Total con descuento: $${totalFinal}</strong>` : `<strong>Total: $${subtotal}</strong>`}
     `;
 
     confirmBtn.style.display = "inline-block";

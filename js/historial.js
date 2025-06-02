@@ -18,47 +18,59 @@ window.addEventListener("DOMContentLoaded", async () => {
       return;
     }
 
-    document.getElementById("tablaHistorial").style.display = "table";
-    mensaje.textContent = "";
-
-    // Agrupar por ID de compra
-    const agrupadas = {};
-    data.forEach(d => {
-      if (!agrupadas[d.id_compra]) agrupadas[d.id_compra] = [];
-      agrupadas[d.id_compra].push(d);
+    // Agrupar por id_compra
+    const comprasAgrupadas = {};
+    data.forEach(item => {
+      if (!comprasAgrupadas[item.id_compra]) {
+        comprasAgrupadas[item.id_compra] = {
+          fecha: item.fecha,
+          total: item.total,
+          productos: []
+        };
+      }
+      comprasAgrupadas[item.id_compra].productos.push(item);
     });
 
-    Object.values(agrupadas).forEach(compra => {
-      compra.forEach(item => {
-        const row = document.createElement("tr");
-        row.innerHTML = `
-          <td>${item.fecha}</td>
-          <td>${item.nombre_producto}</td>
-          <td>${item.cantidad}</td>
-          <td>$${item.precio_unitario}</td>
-          <td>$${item.subtotal}</td>
+    mensaje.textContent = "";
+    document.getElementById("tablaHistorial").style.display = "table";
+
+    for (const [id, compra] of Object.entries(comprasAgrupadas)) {
+      const filaCompra = document.createElement("tr");
+      filaCompra.innerHTML = `
+        <td colspan="5" style="background:#e0f0ff;"><strong>Compra ID ${id}</strong> - Fecha: ${compra.fecha}</td>
+      `;
+      contenedor.appendChild(filaCompra);
+
+      compra.productos.forEach(p => {
+        const fila = document.createElement("tr");
+        fila.innerHTML = `
+          <td></td>
+          <td>${p.nombre_producto}</td>
+          <td>${p.cantidad}</td>
+          <td>$${p.precio_unitario}</td>
+          <td>$${p.subtotal}</td>
         `;
-        contenedor.appendChild(row);
+        contenedor.appendChild(fila);
       });
 
-      // Línea de descuento si aplica
-      const descuento = compra[0].descuento_aplicado;
-      if (descuento > 0) {
-        const descRow = document.createElement("tr");
-        descRow.innerHTML = `
-          <td colspan="4" style="text-align:right;"><strong>Descuento aplicado:</strong></td>
-          <td>-$${descuento}</td>
-        `;
-        contenedor.appendChild(descRow);
-      }
-
-      const totalRow = document.createElement("tr");
-      totalRow.innerHTML = `
-        <td colspan="4" style="text-align:right;"><strong>Total pagado:</strong></td>
-        <td>$${compra[0].total}</td>
+      // Mostrar totales
+      const subtotal = compra.productos.reduce((acc, p) => acc + p.subtotal, 0);
+      const descuento = subtotal - compra.total;
+      const filaTotal = document.createElement("tr");
+      filaTotal.innerHTML = `
+        <td colspan="5" style="text-align:right;">
+          Subtotal: $${subtotal} <br>
+          ${descuento > 0 ? `Descuento: -$${descuento}<br>` : ""}
+          <strong>Total pagado: $${compra.total}</strong>
+        </td>
       `;
-      contenedor.appendChild(totalRow);
-    });
+      contenedor.appendChild(filaTotal);
+
+      // Línea separadora
+      const separador = document.createElement("tr");
+      separador.innerHTML = `<td colspan="5"><hr></td>`;
+      contenedor.appendChild(separador);
+    }
 
   } catch (error) {
     console.error("Error historial:", error);
