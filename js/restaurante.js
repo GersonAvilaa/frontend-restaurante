@@ -135,6 +135,7 @@ async function comprarAhora(id_producto, precio, cantidad) {
     if (res.ok) {
       alert("Compra realizada exitosamente.");
       window.location.href = "confirmacion.html";
+      document.querySelector(".cart-count").textContent = "0";
     } else {
       alert(data.mensaje || "Error al comprar.");
     }

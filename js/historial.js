@@ -1,33 +1,31 @@
 const API_BASE = "https://taller-ph1e.onrender.com";
 
-document.addEventListener("DOMContentLoaded", async () => {
+window.addEventListener("DOMContentLoaded", async () => {
   const token = localStorage.getItem("token");
   if (!token) {
-    alert("Debes iniciar sesión.");
-    location.href = "index.html";
+    alert("Debes iniciar sesión");
     return;
   }
 
   const usuarioId = parseJwt(token).id;
+  const mensaje = document.getElementById("mensaje");
+  const tabla = document.getElementById("tablaHistorial");
+  const tbody = tabla.querySelector("tbody");
 
   try {
     const res = await fetch(`${API_BASE}/api/compras/historial/${usuarioId}`, {
-      headers: { Authorization: `Bearer ${token}` }
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
     });
 
     const data = await res.json();
-
-    const tabla = document.getElementById("tablaHistorial");
-    const cuerpo = tabla.querySelector("tbody");
-    const mensaje = document.getElementById("mensaje");
-
     if (!data.length) {
-      mensaje.textContent = "Aún no has realizado compras.";
+      mensaje.textContent = "Aún no tienes historial de compras.";
       return;
     }
 
     tabla.style.display = "table";
-
     data.forEach(item => {
       const fila = document.createElement("tr");
       fila.innerHTML = `
@@ -37,11 +35,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         <td>$${item.precio_unitario}</td>
         <td>$${item.subtotal}</td>
       `;
-      cuerpo.appendChild(fila);
+      tbody.appendChild(fila);
     });
   } catch (err) {
-    console.error("Error al cargar historial:", err);
-    document.getElementById("mensaje").textContent = "Error al cargar el historial.";
+    console.error("Error al mostrar historial:", err);
+    mensaje.textContent = "Error al mostrar el historial.";
   }
 });
 
