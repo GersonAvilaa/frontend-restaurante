@@ -52,7 +52,6 @@ async function cargarProductos() {
         <img src="img/${prod.imagen}" alt="${prod.nombre}" />
         <h2>${prod.nombre}</h2>
         <p>Precio: $${prod.precio.toLocaleString()}</p>
-        <p>${prod.descripcion || ""}</p>
         <input type="number" min="1" value="1" id="cantidad${index}">
         <div class="button-group">
           <button onclick="addToCart(${prod.id}, ${prod.precio}, document.getElementById('cantidad${index}').value)">Agregar al Carrito</button>
@@ -111,7 +110,6 @@ async function comprarAhora(id_producto, precio, cantidad) {
   const usuarioId = parseJwt(token).id;
 
   try {
-    // Agregar producto al carrito
     await fetch(`${API_BASE}/api/cart`, {
       method: "POST",
       headers: {
@@ -126,7 +124,6 @@ async function comprarAhora(id_producto, precio, cantidad) {
       })
     });
 
-    // Confirmar compra
     const res = await fetch(`${API_BASE}/api/compras`, {
       method: "POST",
       headers: { Authorization: `Bearer ${token}` }
@@ -140,7 +137,6 @@ async function comprarAhora(id_producto, precio, cantidad) {
       if (cartCount) cartCount.textContent = "0";
 
       alert("Compra realizada exitosamente.");
-
       setTimeout(() => {
         window.location.href = "confirmacion.html";
       }, 1000);
